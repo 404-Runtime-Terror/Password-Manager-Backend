@@ -14,9 +14,12 @@ router.get("/", async (req, res) => {
         await client.connect();
         const db = client.db("Users");
         const collection = await db.collection("AccountData").aggregate().toArray();
-        // if (req.query.userName == collection.map((e,index)=>{
-        //     e.userName 
-        // })) 
+        if (req.query.userName == collection.map((e,index)=>{
+            e.userName[index] 
+        })) 
+        {
+            console.log("hi");
+        }
         console.log(username);
         console.log(passwords);
         return res.json(collection);
