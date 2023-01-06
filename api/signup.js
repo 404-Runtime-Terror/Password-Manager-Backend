@@ -16,10 +16,10 @@ router.get("/", async (req, res) => {
         await client.connect();
         const db = client.db("Users");
         const collection = await db.collection("AccountData").aggregate().toArray();
-        collection.map((e,index)=>{
-            usernames[index] = e.userName
+        // collection.map((e,index)=>{
+            // usernames[index] = e.userName
             // passwords[index] = e.password
-        })
+        // })
         // if (req.query.username == usernames.map((index)=>{
         //     usernames[index]
         // })) 
