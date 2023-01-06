@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
             // switch for insert data
             // if (req.query.conform == "yes")
             {
-                AddCollection.insertOne({ userName: req.query.username, email: req.query.email }, (err, result) => {
+                AddCollection.insertOne({ userName: req.query.username, email: req.query.email ,password: req.query.password }, (err, result) => {
                     if (err) {
                         console.error(err);
                         return;
