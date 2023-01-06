@@ -7,7 +7,9 @@ const app = express();
 app.use(cors());
 app.use("/api/signup", signup);
 
-// app.get("/", async (req, res) => {
+app.get("/", async (req, res) => {
+  return res.status(200).send("Working");
+});
 //   var userkey = null;
 //   try {
 //     await client.connect();
