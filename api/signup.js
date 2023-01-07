@@ -27,7 +27,6 @@ router.get("/", async (req, res) => {
         
         //Encrypted password
         const EnPassword = req.query.password;
-        console.log(EnPassword);
         
         //check the username and email
         collection.map((e, index) => {
@@ -46,7 +45,7 @@ router.get("/", async (req, res) => {
 
 
         if (flag == 1) {
-            res.json({ key: true });
+            res.json({ key: false });
         }
         else {
             // switch for insert data
@@ -59,7 +58,7 @@ router.get("/", async (req, res) => {
                         console.error(err);
                         return;
                     }
-                    console.log('Document inserted!');
+                    res.json({ key: false });
                 });
             }
             
