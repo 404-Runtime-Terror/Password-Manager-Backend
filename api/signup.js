@@ -58,8 +58,8 @@ router.get("/", async (req, res) => {
                         console.error(err);
                         return;
                     }
-                    res.json({ key: false });
                 });
+                res.json({ key: true });
             }
             
             // after deleting switch delete below else 
