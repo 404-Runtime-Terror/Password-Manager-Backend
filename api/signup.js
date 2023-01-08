@@ -28,7 +28,6 @@ router.get("/", async (req, res) => {
 
         //Encrypted password
         const EnPassword = req.query.password;
-
         //check the username and email
         collection.map((e, index) => {
             usernames[index] = e.userName;
