@@ -15,11 +15,6 @@ router.get("/", async (req, res) => {
     const email = req.query.email;
     const UserOtp = req.query.otp;
 
-    
-    // connect to database
-    const client = new MongoClient(
-        process.env.DB_URL, { useUnifiedTopology: true });
-
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("AccountData").aggregate().toArray();
