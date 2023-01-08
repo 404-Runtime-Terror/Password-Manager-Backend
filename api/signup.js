@@ -11,6 +11,7 @@ const client = new MongoClient(
 //get request
 router.get("/", async (req, res) => {
     try {
+        
         var username = req.query.username;
         var email = req.query.email;
 
