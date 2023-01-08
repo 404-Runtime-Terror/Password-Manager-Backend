@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/404-Runtime-Terror/Password-Manager-Backend#readme",
   "dependencies": {
+    "axios": "^1.2.2",
     "bcrypt": "^5.1.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -26,6 +27,7 @@
     "express": "^4.18.2",
     "mongodb": "^4.13.0",
     "mongoose": "^6.8.2",
+    "nodemailer": "^6.8.0",
     "nodemon": "^2.0.20"
   }
 }

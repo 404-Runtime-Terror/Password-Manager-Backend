@@ -11,9 +11,8 @@ const client = new MongoClient(
 //get request
 router.get("/", async (req, res) => {
     try {
-        var usernames = [];
-        var email = [];
-        var flag = 0;
+        var username = req.query.username;
+        var email = req.query.email;
 
         //connect to database
         await client.connect();
@@ -29,23 +28,24 @@ router.get("/", async (req, res) => {
         const EnPassword = req.query.password;
         
         //check the username and email
-        collection.map((e, index) => {
-            usernames[index] = e.userName
-            email[index] = e.email
-        })
-
+        var found = collection.find((e) => {
+            if(e === email)
+        {
+            console.log("email found");
+        }        
+    })
         //compare the username and email
         usernames.map((e, index) => {
             const UserInputEmail = email[index];
             if (req.query.username == usernames[index]
-                && req.query.email == UserInputEmail) {
+                || req.query.email == UserInputEmail) {
                 flag = 1;
             }
         })
 
 
         if (flag == 1) {
-            res.json({ key: false });
+            res.json({ isSignup: false });
         }
         else {
             // switch for insert data
@@ -53,13 +53,13 @@ router.get("/", async (req, res) => {
             
             {
                 //insert data into database if username and email is not exist
-                AddCollection.insertOne({ userName: req.query.username, email: req.query.email ,password: EnPassword }, (err, result) => {
+                AddCollection.insertOne({ userName: req.query.username, email: req.query.email ,password: EnPassword ,otp: null}, (err, result) => {
                     if (err) {
                         console.error(err);
                         return;
                     }
                 });
-                res.json({ key: true });
+                res.json({ isSignup: true });
             }
             
             // after deleting switch delete below else 
