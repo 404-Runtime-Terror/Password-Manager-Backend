@@ -12,9 +12,9 @@ const client = new MongoClient(process.env.DB_URL, {
 //get request
 router.get("/", async (req, res) => {
   try {
-    var usernames = [];
-    var email = [];
-    var flag = 0;
+    var username = req.query.username;
+    var email = req.query.email;
+    var isexist = 0;
 
     //connect to database
     await client.connect();
@@ -30,50 +30,43 @@ router.get("/", async (req, res) => {
     const EnPassword = req.query.password;
 
     //check the username and email
-    collection.map((e, index) => {
-      usernames[index] = e.userName;
-      email[index] = e.email;
-    });
-
-    //compare the username and email
-    usernames.map((e, index) => {
-      const UserInputEmail = email[index];
-      if (
-        req.query.username == usernames[index] &&
-        req.query.email == UserInputEmail
-      ) {
-        flag = 1;
+    collection.find((e) => {
+      if (e.email === email) {
+        isexist = 1;
+      } else if (e.userName === username) {
+        isexist = 2;
       }
     });
-
-    if (flag == 1) {
-      res.status(200).json({ key: false });
-    } else {
-      // switch for insert data
-      // if (req.query.conform == "yes")
-
-      {
-        //insert data into database if username and email is not exist
-        AddCollection.insertOne(
-          {
-            userName: req.query.username,
-            email: req.query.email,
-            password: EnPassword,
-          },
-          (err, result) => {
-            if (err) {
-              res.status(500).send("Server error");
-              return;
-            }
+    //insert data into database if username and email is not exist
+    if (isexist == 0) {
+      AddCollection.insertOne(
+        {
+          userName: req.query.username,
+          email: req.query.email,
+          password: EnPassword,
+          otp: null,
+        },
+        (err) => {
+          if (err) {
+            res.status(500).send("Server error");
           }
-        );
-        res.status(200).json({ key: true });
-      }
-
-      // after deleting switch delete below else
-      // else {
-      // res.json({ key: false });
-      // }
+        }
+      );
+      res
+        .status(200)
+        .json({ isSignup: true, isEmailExist: false, isUsernameExist: false });
+    } else if (isexist == 1) {
+      res
+        .status(200)
+        .json({ isSignup: false, isEmailExist: true, isUsernameExist: false });
+    } else if (isexist == 2) {
+      res
+        .status(200)
+        .json({
+          isSignup: false,
+          isUsernameExist: true,
+          isUsernameExist: false,
+        });
     }
   } catch (error) {
     console.error(error);

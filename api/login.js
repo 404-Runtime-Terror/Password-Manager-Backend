@@ -37,14 +37,13 @@ router.get("/", async (req, res) => {
         if (match) {
           //set the flag if username and password is correct
           flag = 1;
-          break;
+          res.json({ isLogin: true });
         }
       }
     }
-    if (flag == 1) {
-      res.status(200).json({ key: true });
-    } else {
-      res.status(200).json({ key: false });
+
+    if (flag == 0) {
+      res.json({ isLogin: false });
     }
   } catch (error) {
     console.error(error);
