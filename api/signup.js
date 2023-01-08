@@ -52,11 +52,21 @@ router.get("/", async (req, res) => {
           }
         }
       );
-      res.status(200).json({ isSignup: true });
+      res
+        .status(200)
+        .json({ isSignup: true, isEmailExist: false, isUsernameExist: false });
     } else if (isexist == 1) {
-      res.status(200).json({ isSignup: false, isEmailExist: true });
+      res
+        .status(200)
+        .json({ isSignup: false, isEmailExist: true, isUsernameExist: false });
     } else if (isexist == 2) {
-      res.status(200).json({ isSignup: false, isUsernameExist: true });
+      res
+        .status(200)
+        .json({
+          isSignup: false,
+          isUsernameExist: true,
+          isUsernameExist: false,
+        });
     }
   } catch (error) {
     console.error(error);
