@@ -12,9 +12,8 @@ const client = new MongoClient(process.env.DB_URL, {
 //get request
 router.get("/", async (req, res) => {
   try {
-    var usernames = [];
-    var email = [];
-    var flag = 0;
+    var username = req.query.username;
+    var email = req.query.email;
 
     //connect to database
     await client.connect();
@@ -30,24 +29,26 @@ router.get("/", async (req, res) => {
     const EnPassword = req.query.password;
 
     //check the username and email
-    collection.map((e, index) => {
-      usernames[index] = e.userName;
-      email[index] = e.email;
-    });
-
-    //compare the username and email
-    usernames.map((e, index) => {
-      const UserInputEmail = email[index];
-      if (
-        req.query.username == usernames[index] &&
-        req.query.email == UserInputEmail
-      ) {
-        flag = 1;
+    var found = collection.find((e) => {
+      console.log(e);
+      if (e === email) {
+        console.log("email found");
       }
     });
+    //compare the username and email
+    // usernames.map((e, index) => {
+    //   const UserInputEmail = email[index];
+    //   if (
+    //     req.query.username == usernames[index] ||
+    //     req.query.email == UserInputEmail
+    //   ) {
+    //     flag = 1;
+    //   }
+    //   //   res.status(200).json({ key: true });
+    // });
 
     if (flag == 1) {
-      res.status(200).json({ key: false });
+      res.json({ isSignup: false });
     } else {
       // switch for insert data
       // if (req.query.conform == "yes")
@@ -59,15 +60,16 @@ router.get("/", async (req, res) => {
             userName: req.query.username,
             email: req.query.email,
             password: EnPassword,
+            otp: null,
           },
           (err, result) => {
             if (err) {
-              res.status(500).send("Server error");
+              console.error(err);
               return;
             }
           }
         );
-        res.status(200).json({ key: true });
+        res.status(200).json({ isSignup: true });
       }
 
       // after deleting switch delete below else
