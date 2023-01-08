@@ -25,10 +25,8 @@ router.get("/", async (req, res) => {
          {
             return e;
          }
-    })
-    console.log(parseInt(found.otp));
-    console.log(parseInt(UserOtp));
-
+    });
+    
     if (parseInt(UserOtp) === parseInt(found.otp))
     {
         res.json({ Verified: true });
