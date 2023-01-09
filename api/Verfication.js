@@ -21,18 +21,19 @@ router.get("/", async (req, res) => {
 
 
     var found = collection.find((e)=>{
-         if(e === email);
+         if(e.email == email)
          {
+          // console.log(e.email);
             return e;
          }
     });
-    
+    console.log(found);
     if (parseInt(UserOtp) === parseInt(found.otp))
     {
-        res.json({ Verified: true });
+        res.status(200).json({ Verified: true});
     }
     else{
-        res.json({ Verified: false });
+        res.status(200).json({ Verified: false });
     }
 
   } catch (error) {
