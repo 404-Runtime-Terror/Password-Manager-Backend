@@ -65,7 +65,7 @@ router.get("/", async (req, res) => {
         .json({
           isSignup: false,
           isUsernameExist: true,
-          isUsernameExist: false,
+         isEmailExist: false
         });
     }
   } catch (error) {
