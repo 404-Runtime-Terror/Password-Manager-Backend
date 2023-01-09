@@ -15,31 +15,25 @@ router.get("/", async (req, res) => {
     const email = req.query.email;
     const UserOtp = req.query.otp;
 
-    
-    // connect to database
-    const client = new MongoClient(
-        process.env.DB_URL, { useUnifiedTopology: true });
-
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("AccountData").aggregate().toArray();
 
 
     var found = collection.find((e)=>{
-         if(e === email);
+         if(e.email == email)
          {
+          // console.log(e.email);
             return e;
          }
-    })
-    console.log(parseInt(found.otp));
-    console.log(parseInt(UserOtp));
-
+    });
+    console.log(found);
     if (parseInt(UserOtp) === parseInt(found.otp))
     {
-        res.json({ Verified: true });
+        res.status(200).json({ Verified: true});
     }
     else{
-        res.json({ Verified: false });
+        res.status(200).json({ Verified: false });
     }
 
   } catch (error) {
