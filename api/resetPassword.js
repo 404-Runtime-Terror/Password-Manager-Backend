@@ -48,10 +48,10 @@ router.get("/", async (req, res) => {
                 { _id: found._id },
                 { $set: { password: Enpassword, otp: null } }
             );
-            res.status(200).json({ "message": "Password Reset" });
+            res.status(200).json({ "message": "Password Reset",isReset: true });
         }
         else{
-            res.status(200).json({"message":"Invalid Email"});
+            res.status(200).json({"message":"Invalid Email",isReset: false});
         }
     } catch (error) {
         console.error(error);
