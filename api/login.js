@@ -16,6 +16,7 @@ router.get("/", async (req, res) => {
     var usernames = [];
     var passwords = [];
     var flag = 0;
+    var userID;
 
     await client.connect();
     const db = client.db("Users");
@@ -36,8 +37,13 @@ router.get("/", async (req, res) => {
         const match = await bcrypt.compare(req.query.password, passwords[i]);
         if (match) {
           //set the flag if username and password is correct
+          collection.find((e) => {
+            if (e.userName === req.query.username) {
+               userID = e._id;  
+              console.log(userID);
+            }});
           flag = 1;
-          res.json({ isLogin: true });
+          res.json({ isLogin: true , userID: userID});
         }
       }
     }

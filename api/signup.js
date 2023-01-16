@@ -10,11 +10,43 @@ const client = new MongoClient(process.env.DB_URL, {
 });
 
 //get request
+async function fetchData(username) {
+
+  const client = new MongoClient(process.env.DB_URL, { useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+    const db = client.db("Users");
+    const collection = await db.collection("AccountData").aggregate().toArray();
+    collection.find((e) => {
+      if (e.userName === username) {
+        userID = e._id;
+      }
+    });
+    return userID;
+  } catch (error) {
+    console.error(error);
+  }
+}
+async function createData(userID) {
+  const client = new MongoClient(process.env.DB_URL, { useUnifiedTopology: true });
+  try {
+    await client.connect();
+    const db = client.db("Users");
+    const collection = await db.collection("Password");
+    collection.insertOne(
+      { _id: userID },
+    );
+  } catch (error) {
+    console.error(error);
+  }
+}
 router.get("/", async (req, res) => {
   try {
     var username = req.query.username;
     var email = req.query.email;
     var isexist = 0;
+    var userID;
 
     //connect to database
     await client.connect();
@@ -52,9 +84,11 @@ router.get("/", async (req, res) => {
           }
         }
       );
+      userID = await fetchData(req.query.username);
+      await createData(userID);
       res
         .status(200)
-        .json({ isSignup: true, isEmailExist: false, isUsernameExist: false });
+        .json({ isSignup: true, isEmailExist: false, isUsernameExist: false, userID: userID });
     } else if (isexist == 1) {
       res
         .status(200)
@@ -65,7 +99,7 @@ router.get("/", async (req, res) => {
         .json({
           isSignup: false,
           isUsernameExist: true,
-         isEmailExist: false
+          isEmailExist: false
         });
     }
   } catch (error) {
