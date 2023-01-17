@@ -9,12 +9,12 @@ const dashboard =  require("./api/dashboard");
 const PORT = process.env.PORT || 5000;
 const app = express();
 app.use(cors());
-app.use("/user/signup", signup);
 
 app.get("/", async (req, res) => {
   return res.status(200).send("Working");
 });
 
+app.use("/user/signup", signup);
 app.use("/user/login", login);
 app.use("/user/forget",forget);
 app.use("/user/verification",Verification);

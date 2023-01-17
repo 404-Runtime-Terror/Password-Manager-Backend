@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -34,9 +35,19 @@ async function createData(userID) {
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("Password");
-    collection.insertOne(
-      { _id: userID },
-    );
+    collection.insertMany([
+      { _id: userID,
+        passwords: [
+          { websites: "null",
+            accounts:[
+            {
+              username: "null",
+              password: "null",
+            }
+          ]}
+        ]
+      }
+    ])
   } catch (error) {
     console.error(error);
   }

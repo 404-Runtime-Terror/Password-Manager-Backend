@@ -9,7 +9,7 @@ require('dotenv').config();
 router.get("/", async (req, res) => {
 
     var flag = 0;
-    var inedxOtp;
+    var indexOtp;
     var id = [];
     var emails = [];
     var emailFound;
