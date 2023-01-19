@@ -31,7 +31,7 @@ async function createUser(collection, userID, mainData, website, Newusername, Ne
   var accounts; 
   
   //To check if website exists and if username is new
-  var newName;
+  var newName = true;
   var websiteExists;
   try {
 
@@ -44,15 +44,11 @@ async function createUser(collection, userID, mainData, website, Newusername, Ne
         //so to store all usernames in accounts
         accounts = e.accounts;
         console.log(accounts);
-        accounts.find((e) => {
-          if (e.username !== Newusername) {
+        accounts.find((e,index) => {
+          console.log(e.username)
+          if (e.username === Newusername) {
             //if username is new
             
-            newName = true;
-          }
-          else {
-
-            //if username already exists
             newName = false;
           }
         });
@@ -86,14 +82,14 @@ async function createUser(collection, userID, mainData, website, Newusername, Ne
 //get request
 router.get("/", async (req, res) => {
   try {
-    // var userID = req.query.userID;
-    var userID = "63c836313739a268fe9984f6";
-    // var website = req.query.website;
-    var website = "google";
-    // var newUsername = req.query.username;
-    var newUsername = "newuser";
-    // var newPassword = req.query.password;
-    var newPassword = "newpassword";
+    var userID = req.query.userID;
+    // var userID = "63c836313739a268fe9984f6";
+    var website = req.query.website;
+    // var website = "google";
+    var newUsername = req.query.username;
+    // var newUsername = "newuser";
+    var newPassword = req.query.password;
+    // var newPassword = "newpassword";
     
     var mainData;
     

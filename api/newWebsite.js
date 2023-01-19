@@ -28,16 +28,13 @@ async function fetchdata(collection, userID) {
 }
 
 async function newWebsite(collection, userID, mainData, website, username, password) {
-    var websiteExists ;
+    var websiteExists = false;
     try{
         console.log(mainData.passwords);
         mainData.passwords.find((e)=>{
             if(e.websites === website)
             {
                 websiteExists = true;
-            }
-            else{
-                websiteExists = false;
             }
         });
         if(websiteExists === false)
@@ -59,14 +56,14 @@ async function newWebsite(collection, userID, mainData, website, username, passw
 //get request
 router.get("/", async (req, res) => {
   try {
-    // var userID = req.query.userID;
-    var userID = "63c6befa784b473173e4f3df";
-    // var website = req.query.website;
-    var website = "google";
-    // var username = req.query.username;
-    var username = "newuser";
-    // var password = req.query.password;
-    var password = "newpassword";
+    var userID = req.query.userID;
+    // var userID = "63c8335cc61868d253fca584";
+    var website = req.query.website;
+    // var website = "google";
+    var username = req.query.username;
+    // var username = "newuser";
+    var password = req.query.password;
+    // var password = "newpassword";
     var mainData ;
     await client.connect();
     const db = client.db("Users");

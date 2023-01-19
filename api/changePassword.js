@@ -35,15 +35,12 @@ async function changePass(collection, userID, mainData, website, username, passw
             if(e.websites === website)
             {
                 accounts = e.accounts;
-                accounts.find((e)=>{
+                accounts.map((e)=>{
 
                 if(e.username === username)
-                {
+                { 
                     passwordExists = true;
                     e.password = password;
-                }
-                else{
-                    passwordExists = false;
                 }
             });
             }
@@ -59,14 +56,14 @@ async function changePass(collection, userID, mainData, website, username, passw
 //get request
 router.get("/", async (req, res) => {
   try {
-    // var userID = req.query.userID;
-    var userID = "63c836313739a268fe9984f6";
-    // var website = req.query.website;
-    var website = "google";
-    // var username = req.query.username;
-    var username = "emailUser";
-    // var password = req.query.password;
-    var password = "password";
+    var userID = req.query.userID;
+    // var userID = "63c836313739a268fe9984f6";
+    var website = req.query.website;
+    // var website = "google";
+    var username = req.query.username;
+    // var username = "emailUser";
+    var password = req.query.password;
+    // var password = "password";
     
     var mainData ;
     await client.connect();

@@ -68,14 +68,14 @@ async function createWebsite(collection, userID, mainData,website,username,passw
 //get request
 router.get("/", async (req, res) => {
   try {
-    // var userID = req.query.userID;
-    var userID = "63c836313739a268fe9984f6";
-    // var website = req.query.website;
-    var website = "google";
-    // var username = req.query.username;
-    var username = "emailUser";
-    // var password = req.query.password;
-    var password = "emailPassword";
+    var userID = req.query.userID;
+    // var userID = "63c836313739a268fe9984f6";
+    var website = req.query.website;
+    // var website = "google";
+    var username = req.query.username;
+    // var username = "emailUser";
+    var password = req.query.password;
+    // var password = "emailPassword";
 
     var mainData ;
     

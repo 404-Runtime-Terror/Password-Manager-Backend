@@ -35,7 +35,6 @@ router.get("/", async (req, res) => {
   try {
     userID = req.query.userID;
     var flag = false;
-    // userID = "63c8335cc61868d253fca584";
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("Password").aggregate().toArray();
