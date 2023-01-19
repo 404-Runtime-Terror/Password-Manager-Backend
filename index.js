@@ -11,6 +11,7 @@ const newUser = require("./api/newUser");
 const newWebsite = require("./api/newWebsite");
 const changePassword = require("./api/changePassword");
 const deleteUser = require("./api/deleteUser");
+const completeData = require("./api/completeData");
 
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -31,6 +32,7 @@ app.use("/user/dashboard/newUser",newUser);
 app.use("/user/dashboard/newWebsite",newWebsite);
 app.use("/user/dashboard/changePassword",changePassword);
 app.use("/user/dashboard/deleteUser",deleteUser);
+app.use("/user/dashboard/CompleteData",completeData);
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);

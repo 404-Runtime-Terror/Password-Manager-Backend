@@ -29,22 +29,31 @@ async function fetchdata(collection, userID) {
 
 async function deleteUser(collection, userID, mainData, website, username, password) {
     var accounts;
+    var deleteUserDone;
     try{
         mainData.passwords.find((e)=>{
             if(e.websites === website)
             {
                 accounts = e.accounts;
-                console.log(accounts);
                 accounts.map((e,index)=>{
                     if(e.username === username)
                     {
-                        console.log(index);
+                        // console.log(index);
+
+                        // delete the data
                         accounts.splice(index,1);
+
+                        deleteUserDone = false;
+                        collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords : mainData.passwords } });
+                        return deleteUserDone;
+                    }
+                    else{
+                        deleteUserDone = true;
+                        return deleteUserDone;
                     }
                 })
             }
         });
-        collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords : mainData.passwords } });
     }
     catch (error) {
     console.log(error)
@@ -57,16 +66,25 @@ router.get("/", async (req, res) => {
     // var userID = req.query.userID;
     var userID = "63c6befa784b473173e4f3df";
     // var website = req.query.website;
-    var website = "google1";
+    var website = "email";
     // var username = req.query.username;
-    var username = "user1";
+    var username = "newuser";
 
     var mainData ;
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("Password");
+    
     mainData = await fetchdata(collection, userID);
-    await deleteUser(collection, userID, mainData,website,username);
+    value = await deleteUser(collection, userID, mainData,website,username);
+
+    if(value === false)
+    {
+        res.status(200).json({deleteUser : true });
+    }
+    else{
+        res.status(200).json({deleteUser : false });
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).send("Server error");

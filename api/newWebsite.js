@@ -28,22 +28,27 @@ async function fetchdata(collection, userID) {
 }
 
 async function newWebsite(collection, userID, mainData, website, username, password) {
-    var flag = 0;
+    var websiteExists ;
     try{
         console.log(mainData.passwords);
         mainData.passwords.find((e)=>{
             if(e.websites === website)
             {
-                flag = 1;
+                websiteExists = true;
+            }
+            else{
+                websiteExists = false;
             }
         });
-        if(flag !== 1)
+        if(websiteExists === false)
         {
             mainData.passwords.push({websites:website,accounts:[{username:username,password:password}]});
             collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords : mainData.passwords } });
+            return true;
         }
         else{
             console.log("Website already exists");
+            return false;
         }
     }
     catch (error) {
@@ -67,8 +72,17 @@ router.get("/", async (req, res) => {
     const db = client.db("Users");
     const collection = await db.collection("Password");
     // await addPassword(collection, userID);
+    
     mainData = await fetchdata(collection, userID);
-    await newWebsite(collection, userID, mainData,website,username,password);
+    value = await newWebsite(collection, userID, mainData,website,username,password);
+    
+    if(value === true)
+    {
+        return res.status(200).json({webCreate: true});
+    }
+    else{
+        return res.status(200).json({webCreate: false});
+    }
   } catch (error) {
     console.error(error);
     return res.status(500).send("Server error");

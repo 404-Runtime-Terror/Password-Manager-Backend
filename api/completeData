@@ -1,0 +1,48 @@
+const { MongoClient } = require("mongodb");
+const mongoose = require("mongoose");
+const express = require("express");
+const router = express.Router();
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
+
+//connect to mongodb database
+const client = new MongoClient(process.env.DB_URL, {
+  useUnifiedTopology: true,
+});
+
+//get request
+async function fetchData(username) {
+
+  const client = new MongoClient(process.env.DB_URL, { useUnifiedTopology: true });
+
+  try {
+    await client.connect();
+    const db = client.db("Users");
+    const collection = await db.collection("AccountData").aggregate().toArray();
+    collection.find((e) => {
+      if (e.userName === username) {
+        userID = e._id;
+      }
+    });
+    return userID;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+router.get("/", async (req, res) => {
+  try {
+    console.log(1);
+    await client.connect();
+    const db = client.db("Users");
+    const collection = await db.collection("Password").aggregate().toArray();
+    collection.find(e=>{
+        console.log(e);
+    })
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send("Server error");
+  }
+});
+
+module.exports = router;
