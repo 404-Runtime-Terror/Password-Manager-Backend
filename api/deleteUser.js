@@ -36,7 +36,6 @@ async function deleteUser(collection, userID, mainData, website, username, passw
     mainData.passwords.find((e) => {
       if (e.websites === website) {
         accounts = e.accounts;
-        console.log("accounts")
         console.log(accounts.length);
         if (accounts.length > 1) {
           console.log("running7");
