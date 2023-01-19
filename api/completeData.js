@@ -40,16 +40,15 @@ router.get("/", async (req, res) => {
     const collection = await db.collection("Password").aggregate().toArray();
     collection.find(e => {
       if ((e._id).equals(userID)) {
-        JSONfile = { e };
+        passwordData =  e ;
         flag = true;
       }
     }
     )
     if (flag) {
-      const data = await fetchData(userID);
-        mainJson = {userdata : data,data :JSONfile};
-        console.log(mainJson);
-        return res.status(200).json(mainJson);
+      const UserInfo = await fetchData(userID);
+      return res.status(200).json({UserInfo, passwordData});
+
     }
   } catch (error) {
     console.error(error);
