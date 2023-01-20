@@ -14,11 +14,17 @@ async function fetchdata(collection, userID) {
   var mainData;
   try {
     const data = await collection.find().toArray();
+
+    // Finding data as per _id
     data.find((e) => {
       if (e._id.toString() === userID) {
+
+        // Storing data in mainData
         mainData = e;
       }
     });
+
+    // Returning mainData
     return mainData;
   } catch (error) {
     console.log(error)
@@ -32,23 +38,31 @@ async function createUser(collection, userID, mainData, website, Newusername, Ne
   
   //To check if website exists and if username is new
   var newName = true;
+
+  // Flag To check if website exists 
   var websiteExists;
   try {
 
+    //check if website exists
     mainData.passwords.find((e) => {
       if (e.websites === website) {
-        // if website exists
+
+        // if website exists set websiteExists to true
         websiteExists = true;
         
         //check if username is new by comparing with all usernames 
         //so to store all usernames in accounts
         accounts = e.accounts;
         console.log(accounts);
+
+        // looping through accounts
         accounts.find((e,index) => {
           console.log(e.username)
+          
+          // if username is not new set newName to false
           if (e.username === Newusername) {
-            //if username is new
             
+            //if username is not new
             newName = false;
           }
         });
@@ -82,14 +96,12 @@ async function createUser(collection, userID, mainData, website, Newusername, Ne
 //get request
 router.get("/", async (req, res) => {
   try {
+
+    // get userID, website, username and password from query
     var userID = req.query.userID;
-    // var userID = "63c836313739a268fe9984f6";
     var website = req.query.website;
-    // var website = "google";
     var newUsername = req.query.username;
-    // var newUsername = "newuser";
     var newPassword = req.query.password;
-    // var newPassword = "newpassword";
     
     var mainData;
     

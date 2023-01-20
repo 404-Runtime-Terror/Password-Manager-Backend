@@ -1,3 +1,4 @@
+// Require modules
 const { MongoClient, ObjectId } = require("mongodb");
 const express = require("express");
 const nodeMailer = require("nodemailer");
@@ -7,24 +8,28 @@ require('dotenv').config();
 
 
 router.get("/", async (req, res) => {
-
+    // flag variable
     var flag = 0;
+
+    // index of OTP in database
     var indexOtp;
+
+    // array to store all ids and emails
     var id = [];
     var emails = [];
+
     var emailFound;
-    // user inputs 
+    
+    // get email from query
     const email = req.query.email;
 
     // connect to database
     const client = new MongoClient(
         process.env.DB_URL, { useUnifiedTopology: true });
-
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("AccountData").aggregate().toArray();
-    const AddCollection = db.collection("AccountData")
-    // console.log(collection);
+    const AddCollection = db.collection("AccountData");
 
     // get all emails from database
     collection.map((e, index) => {
@@ -53,12 +58,11 @@ router.get("/", async (req, res) => {
     if (flag === 1) {
         AddCollection.updateOne(
             { _id: ObjectId(indexOtp) },
-            // { $set: { otp: EnOtp } }
             { $set: { otp: OTP } },
         );
 
        
-        
+        // send email with OTP
         const transporter = nodeMailer.createTransport({
             service: 'gmail',
             auth: {
@@ -67,6 +71,7 @@ router.get("/", async (req, res) => {
             }
         });
         
+        // email format
         let details = {
             from: process.env.AUTH_EMAIL,
             to: email,
@@ -89,7 +94,7 @@ router.get("/", async (req, res) => {
         };
         
         
-        
+        // send email
         transporter.sendMail(details, function (err, data) {
             if (err) {
                 console.log('Error Occurs');
@@ -100,6 +105,7 @@ router.get("/", async (req, res) => {
         });
         
     }
+    // Timer to delete OTP from database
     setTimeout(function() {
         AddCollection.updateOne(
             { _id: ObjectId(indexOtp) },
