@@ -1,8 +1,7 @@
+// Require modules
 const { MongoClient } = require("mongodb");
 const express = require("express");
-const app = express();
 const router = express.Router();
-const bcrypt = require("bcryptjs");
 require('dotenv').config();
 
 //connect to mongodb database
@@ -12,27 +11,30 @@ const client = new MongoClient(
 //get request  
 router.get("/", async (req, res) => {
   try {
+    // getting query
     const email = req.query.email;
     const UserOtp = req.query.otp;
 
+    // connecting to database
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("AccountData").aggregate().toArray();
 
-
+    // finding data as per email
     var found = collection.find((e)=>{
          if(e.email == email)
          {
-          // console.log(e.email);
             return e;
          }
     });
-    console.log(found);
+    // given otp and otp in database is same
     if (parseInt(UserOtp) === parseInt(found.otp))
     {
+        // updating verified to true
         res.status(200).json({ Verified: true});
     }
     else{
+        // updating verified to false
         res.status(200).json({ Verified: false });
     }
 

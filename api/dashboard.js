@@ -68,14 +68,12 @@ async function createWebsite(collection, userID, mainData,website,username,passw
 //get request
 router.get("/", async (req, res) => {
   try {
+
+    //Getting data from frontend UserID and website name, username and password
     var userID = req.query.userID;
-    // var userID = "63c836313739a268fe9984f6";
     var website = req.query.website;
-    // var website = "google";
     var username = req.query.username;
-    // var username = "emailUser";
     var password = req.query.password;
-    // var password = "emailPassword";
 
     var mainData ;
     
@@ -84,16 +82,19 @@ router.get("/", async (req, res) => {
     const db = client.db("Users");
     const collection = await db.collection("Password");
     
+    //Calling functions to fetch data and create website
     mainData = await fetchdata(collection, userID);
     value = await createWebsite(collection, userID, mainData,website,username,password);
     
+    //if value is true then website is created
     if (value === true){
       res.json({website : true}).status(200);
     }
+    //if value is false then website is not created
     else{
       res.json({website : false}).status(200);
     }
-
+    // if any error occurs
   } catch (error) {
     console.error(error);
     return res.status(500).send("Server error");

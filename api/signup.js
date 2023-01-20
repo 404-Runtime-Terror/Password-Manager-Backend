@@ -1,5 +1,5 @@
+// require modules
 const { MongoClient } = require("mongodb");
-const mongoose = require("mongoose");
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
@@ -12,29 +12,36 @@ const client = new MongoClient(process.env.DB_URL, {
 
 //get request
 async function fetchData(username) {
-
-  const client = new MongoClient(process.env.DB_URL, { useUnifiedTopology: true });
-
   try {
+
+    // connect to database
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("AccountData").aggregate().toArray();
+
+    // get _id from database
     collection.find((e) => {
       if (e.userName === username) {
         userID = e._id;
       }
     });
+
+    // return _id
     return userID;
   } catch (error) {
     console.error(error);
   }
 }
+
+// create data in database
 async function createData(userID) {
-  const client = new MongoClient(process.env.DB_URL, { useUnifiedTopology: true });
   try {
+    // connect to database
     await client.connect();
     const db = client.db("Users");
     const collection = await db.collection("Password");
+    
+    // asign basic structure to database
     collection.insertMany([
       { _id: userID,
         passwords: [
@@ -54,8 +61,12 @@ async function createData(userID) {
 }
 router.get("/", async (req, res) => {
   try {
+
+    // get data from request
     var username = req.query.username;
     var email = req.query.email;
+
+    // set the flag
     var isexist = 0;
     var userID;
 

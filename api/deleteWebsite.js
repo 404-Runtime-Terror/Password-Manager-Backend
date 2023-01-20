@@ -1,4 +1,4 @@
-
+// Require modules
 const { MongoClient, ObjectId } = require("mongodb");
 const express = require("express");
 const router = express.Router();
@@ -9,15 +9,24 @@ const client = new MongoClient(process.env.DB_URL, {
     useUnifiedTopology: true,
 });
 
+//fetch data from database
 async function fetchdata(collection, userID) {
     var mainData;
     try {
+
+        // storing Database data in data variable
         const data = await collection.find().toArray();
+
         data.find((e) => {
+            // if _id is equal to userID
             if (e._id.toString() === userID) {
+
+                // storing data in mainData variable
                 mainData = e;
             }
         });
+
+        // returning mainData
         return mainData;
     } catch (error) {
         console.log(error)
@@ -25,39 +34,69 @@ async function fetchdata(collection, userID) {
     }
 }
 
-async function deleteWebsite(collection, userID, mainData, website, username, password) {
+// delete website function
+async function deleteWebsite(collection, userID, mainData, website) {
     var accounts;
+    // flag variable
     var deleteWebDone = false;
+
+    // array to store all websites
     var totWeb = [];
+
+    // index of website
     var gotIndex;
     try {
+
+        // collecting all websites in total Website array
         mainData.passwords.find((e) => {
             totWeb.push(e.websites);
         })
-        mainData.passwords.find((e,index1) => {
+
+        // finding website in mainData.passwords
+        mainData.passwords.find((e, index1) => {
+
+            // if website is found
             if (e.websites === website) {
+                
+                // saving index of website
                 gotIndex = index1;
-                console.log(e.websites);
+
+                // if there is only one website then set it to null to maintain database structure
                 if (totWeb.length === 1) {
-                    
+                    // set website to null
                     e.websites = "null";
+
+                    // accounts array
                     accounts = e.accounts;
-                    console.log(accounts.length );
-                    accounts.splice(0, accounts.length-1);
-                    console.log(accounts.length );
+
+                    // delete the account data till the data saved in account is only one username and password
+                    accounts.splice(0, accounts.length - 1);
+                    
+                    // set username and password to null
                     accounts.find((e) => {
                         e.username = "null";
                         e.password = "null";
                     })
+
+                    // set deleteWebDone to true
                     deleteWebDone = true;
+
+                    // update database
                     collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords: mainData.passwords } });
-                }else{
-                        mainData.passwords.splice(gotIndex, 1);
-                        deleteWebDone = true;
-                        collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords: mainData.passwords } });
+                } else {
+                    // if there are more than one website then delete the website
+                    mainData.passwords.splice(gotIndex, 1);
+
+                    // set deleteWebDone to true
+                    deleteWebDone = true;
+
+                    // update database
+                    collection.updateMany({ _id: ObjectId(userID) }, { $set: { passwords: mainData.passwords } });
                 }
             }
         })
+
+        // return deleteWebDone flag variable
         return deleteWebDone;
     }
     catch (error) {
@@ -68,21 +107,25 @@ async function deleteWebsite(collection, userID, mainData, website, username, pa
 //get request
 router.get("/", async (req, res) => {
     try {
+
+        // getting userID, website, username and password from query
         var userID = req.query.userID;
-        // var userID = "63c6befa784b473173e4f3df";
         var website = req.query.website;
-        // var website = "email";
-        var username = req.query.username;
-        // var username = "newuser";
 
         var mainData;
+
+        // connecting to database
         await client.connect();
         const db = client.db("Users");
         const collection = await db.collection("Password");
 
+        // fetching data from database
         mainData = await fetchdata(collection, userID);
-        value = await deleteWebsite(collection, userID, mainData, website, username);
-        console.log(value);
+        
+        // getting deleteWebDone flag variable
+        value = await deleteWebsite(collection, userID, mainData, website);
+        
+        // if deleteWebDone is true then send deleteWebDone as true
         if (value) {
             res.status(200).json({ deleteWeb: true });
         }
